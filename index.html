@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全职高手小游戏之——你与谁最匹配？！？！</title>
+  <style>
+    :root {
+      --bg-1: #0f1020;
+      --bg-2: #1a1c38;
+      --accent: #ffb703;
+      --accent-hover: #ffc94a;
+      --text-main: #f7f8ff;
+      --text-sub: #c7cae7;
+      --card: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(circle at top right, #28326d 0%, transparent 40%),
+        radial-gradient(circle at bottom left, #5f247a 0%, transparent 45%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .hero {
+      width: min(900px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 42px 28px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 18px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      color: #1d1d1d;
+      background: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.2;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      text-wrap: balance;
+    }
+
+    .title-main {
+      display: block;
+      font-size: clamp(26px, 3.8vw, 40px);
+      font-weight: 700;
+    }
+
+    .title-highlight {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(36px, 6.3vw, 64px);
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 14px 26px;
+      font-size: 17px;
+      font-weight: 700;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1f1f1f;
+      box-shadow: 0 10px 24px rgba(255, 183, 3, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .game-content {
+      width: min(960px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .opening {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-left: 3px solid rgba(132, 232, 154, 0.9);
+      border: 1px solid rgba(132, 232, 154, 0.45);
+      background: rgba(132, 232, 154, 0.12);
+      border-radius: 10px;
+    }
+
+    .dialogue {
+      color: rgba(247, 248, 255, 0.82);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .dialogue p + p {
+      margin-top: 8px;
+    }
+
+    .question {
+      margin-top: 4px;
+      color: var(--text-main);
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .question-media {
+      margin-top: 12px;
+    }
+
+    .question-media.side {
+      margin-top: 0;
+      flex: 0 0 auto;
+    }
+
+    .question-image {
+      width: min(130px, 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .options-row {
+      display: block;
+    }
+
+    .options-row.side {
+      margin-top: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .options {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .options-row.side .options {
+      margin-top: 0;
+      flex: 1;
+    }
+
+    .option-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .option-item:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .option-id {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .shape-icon {
+      width: 20px;
+      height: 20px;
+      margin-left: 4px;
+      vertical-align: -3px;
+      color: currentColor;
+    }
+
+    .result-card {
+      border: 1px solid rgba(255, 183, 3, 0.45);
+      border-radius: 14px;
+      padding: 16px;
+      background: rgba(255, 183, 3, 0.08);
+      margin-bottom: 16px;
+    }
+
+    .result-name {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #ffd67a;
+    }
+
+    .result-body,
+    .result-note {
+      font-size: 17px;
+      line-height: 1.8;
+      color: rgba(247, 248, 255, 0.94);
+      white-space: pre-wrap;
+    }
+
+    .result-note {
+      margin-top: 10px;
+      color: #ffe7b3;
+    }
+
+    .all-results {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .all-results-divider {
+      text-align: center;
+      color: #ffe7b3;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin: 4px 0 2px;
+      font-size: clamp(24px, 3.8vw, 34px);
+      line-height: 1.35;
+    }
+
+    @media (max-width: 520px) {
+      .hero {
+        padding: 34px 20px;
+        border-radius: 18px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .options-row.side {
+        flex-direction: column;
+      }
+
+      .question-image {
+        width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="hero" id="coverPage">
+    <h1>
+      <span class="title-main">全职高手小游戏之</span>
+      <span class="title-highlight">你与谁最匹配 (*/ω＼*)</span>
+    </h1>
+    <div class="actions">
+      <button class="btn btn-primary" id="startBtn">开始测试</button>
+    </div>
+  </main>
+
+  <main class="game-content hidden" id="gamePage">
+    <section class="opening" id="openingBlock">
+      <div class="dialogue">
+        <p>主持人：今天有请微草战队队长、魔术师王杰希大神作为我们特邀嘉宾一起为大家主持这个游戏！</p>
+        <p>王杰希：主持人好，大家好。</p>
+        <p>主持人：听说杰希大神对于占卜看相也有自己独到的心得，希望这次能和我们分享一下。</p>
+        <p>王杰希：一点爱好，谈不上独到心得。</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="question" id="questionText">首先请确认您的性别：</p>
+      <div class="options-row" id="optionsRow">
+        <div class="options" id="optionsWrap">
+          <button class="option-item" data-choice="A"><span class="option-id">A</span> 女</button>
+          <button class="option-item" data-choice="B"><span class="option-id">B</span> 男</button>
+          <button class="option-item" data-choice="C"><span class="option-id">C</span> 你猜</button>
+          <button class="option-item" data-choice="D"><span class="option-id">D</span> 为什么不是第1题？</button>
+        </div>
+        <div class="question-media hidden" id="questionMedia">
+          <img class="question-image" id="questionImage" alt="题目配图" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const coverPage = document.getElementById("coverPage");
+    const gamePage = document.getElementById("gamePage");
+    const openingBlock = document.getElementById("openingBlock");
+    const questionText = document.getElementById("questionText");
+    const optionsRow = document.getElementById("optionsRow");
+    const questionMedia = document.getElementById("questionMedia");
+    const questionImage = document.getElementById("questionImage");
+    const optionsWrap = document.getElementById("optionsWrap");
+    let currentQuestion = "00";
+    const QUESTION_IMAGES = {
+      "10": "./assets/q10-finger.png"
+    };
+    const RESULTS = {
+      A: {
+        name: "叶修",
+        body: "思维灵活的你最适合的是叶修。双子座的叶修和他的角色君莫笑一样让人难以捉摸，四大战术大师之首的心思让很多人无从揣测。只有心思活络花样百出的你才能跟上他的节奏。",
+        note: "——不过还是先确认一下自己是否可以忍耐烟味，再作决定吧！"
+      },
+      B: {
+        name: "楚云秀",
+        body: "性格温和的你最适合的是楚云秀。狮子座的楚云秀，外表坚强内心柔和，可能她上一秒还想给你点颜色瞧瞧，下一秒就拉着你一起去看电视剧了。",
+        note: "——能和她一起看电视，大概才是可以和她在一起的关键。"
+      },
+      C: {
+        name: "韩文清",
+        body: "内心希望受到人保护的你最适合的是韩文清。有着白羊座个性的韩文清，就算遭受挫折也会重整旗鼓、永不言败。就算你加班到半夜他也会来接你，再也不用担心路上会遇到抢劫。",
+        note: "——不过少女你先把你的钱包放回包里好吗？拿在手上是要做什么？"
+      },
+      D: {
+        name: "黄少天",
+        body: "害怕寂寞的你最适合的是黄少天。不论什么时候都活力四射，有着狮子座特性的黄少天，会让你觉得生活非常充实愉快，幽默有趣的他也会让你一直充满动力！",
+        note: "——那个什么？你需要个耳塞？哦，你那边太吵了，我听不见——"
+      },
+      E: {
+        name: "楼冠宁",
+        body: "最适合你的就是楼冠宁这样的高富帅了！有了高富帅还要什么解析！没有解析！羡慕嫉妒恨！",
+        note: ""
+      },
+      F: {
+        name: "苏沐橙",
+        body: "选择了可以包容你一切的苏沐橙呢……首先，请先接受来自荣耀位面的嫉妒！可以包容一切的苏沐橙，永远都会是最支持你的那一个！",
+        note: "——记得了解她喜欢的冰淇淋口味哦～"
+      },
+      G: {
+        name: "唐柔",
+        body: "可以少奋斗三十年的你。",
+        note: "——你好，唐书森先生说要找您谈话，请于今日十二时到H市西子湖XX酒店见。"
+      },
+      H: {
+        name: "王杰希",
+        body: "希望被温柔对待的你最适合的是王杰希。温柔体贴的王杰希虽然有着\"魔术师\"的称号，在感情方面却可能会表露得十分缓慢，请一定耐心等待。",
+        note: "——绿色的小盆栽可以提高好感度哦！不愧是微草的队长！"
+      },
+      I: {
+        name: "肖时钦",
+        body: "有着同样多好奇心的你最适合的是肖时钦，职业是机械师的他，擅长探索和发现，不过却不太擅长发现感情的线索呢！建议你潜伏在他身边，时间长了，说不定就会被他发现了！",
+        note: "——祝你早日收到好吃的马卡龙！"
+      },
+      J: {
+        name: "喻文州",
+        body: "不爱动脑的你，刚好可以和头脑很好的喻文州在一起。有着敏锐的直觉和擅长思考的头脑，每时每刻都能了解你的需要，和喻文州相处起来会令人十分放松。",
+        note: "——蓝雨队长很忙，要提醒他按时做手操哦！"
+      },
+      K: {
+        name: "于锋",
+        body: "喜欢整洁干净的你最适合的是于锋。意志坚定、对成功充满信心的于锋会不断地追逐自己的目标，有着同样理想目标的你可以与他同行！而且整洁的你也绝对不会把他刚收拾好的东西弄乱。",
+        note: "——来一起大扫除吧！"
+      },
+      L: {
+        name: "张佳乐",
+        body: "幸运的你最适合的是张佳乐。你的好运或许就是你适合张佳乐的理由，这正是完善的互补。而浪漫的张佳乐也会给你你想要的回应。",
+        note: "——如果下雨的话，就在室内约会吧……"
+      },
+      M: {
+        name: "张新杰",
+        body: "可以军事化管理自己的你最适合的是张新杰，你可以严格地完成张新杰制订的作息时间表，这真是太棒了！听他的话，你就已经成功了45.6%哦！",
+        note: "——……加油啊！"
+      },
+      N: {
+        name: "周泽楷",
+        body: "翻译能力有九级的你最适合的是周泽楷。……………………………… 嗯。",
+        note: "——总之请自行翻译解析。"
+      }
+    };
+
+    const QUESTIONS = {
+      "00": { title: "首先请确认您的性别", options: [
+        { key: "A", text: "女", next: "02" },
+        { key: "B", text: "男", next: "28" },
+        { key: "C", text: "你猜", next: "PAGE_GUESS_WARNING" },
+        { key: "D", text: "为什么不是第1题？", next: "01" }
+      ] },
+      "01": { title: "我就是要坚定地看完第一题！", options: [
+        { key: "A", text: "是", next: "10" },
+        { key: "B", text: "否——那你为什么还要看?", next: "04" }
+      ] },
+      "02": { title: "喜欢以下哪个形状?", options: [
+        { key: "A", text: "△", next: "06" },
+        { key: "B", text: "○", next: "03" },
+        { key: "C", text: "□", next: "07" }
+      ] },
+      "03": { title: "和朋友约见面早到了一个小时，这一个小时你会？", options: [
+        { key: "A", text: "到约好见面的地方坐等", next: "05" },
+        { key: "B", text: "找个网吧玩一小时", next: "04" },
+        { key: "C", text: "我没早到过", next: "09" },
+        { key: "D", text: "先站在地铁口玩手机，催促朋友快点来", next: "08" },
+        { key: "E", text: "先逛个街", next: "11" }
+      ] },
+      "04": { title: "你的打字的速度是？", options: [
+        { key: "A", text: "喻文州的四倍—六倍，如同狂风骤雨地脸滚键盘一般", next: "15" },
+        { key: "B", text: "大概和喻文州差不多吧?我是个正常人", next: "17" },
+        { key: "C", text: "请给我喻文州的标准速度，我才能以他为参照", next: "10" },
+        { key: "D", text: "可以忽略不计的速度，一指禅……", next: "18" }
+      ] },
+      "05": { title: "刮发票中过奖吗？", options: [
+        { key: "A", text: "中过", next: "11" },
+        { key: "B", text: "没有", next: "12" },
+        { key: "C", text: "没要过发票，他们说不要发票送饮料", next: "20" }
+      ] },
+      "06": { title: "手相杂乱无章？", options: [
+        { key: "A", text: "是", next: "22" },
+        { key: "B", text: "不是", next: "23" },
+        { key: "C", text: "不、不懂你在说什么.....", next: "19" },
+        { key: "D", text: "不迷信！你说手相我说耶！手相！耶！手相！耶！", next: "12" }
+      ] },
+      "07": { title: "捡到钱包的第一反应是______？", options: [
+        { key: "A", text: "交给警察", next: "11" },
+        { key: "B", text: "老韩显灵", next: "16" },
+        { key: "C", text: "有圈套！", next: "17" },
+        { key: "D", text: "看看里面有啥，确定了以后去发个微博", next: "25" }
+      ] },
+      "08": { title: "喜欢穿什么风格的衣服?", options: [
+        { key: "A", text: "可爱系", next: "14" },
+        { key: "B", text: "炫酷系", next: "10" },
+        { key: "C", text: "成熟系", next: "13" },
+        { key: "D", text: "并没有特别的穿衣风格，能穿的都穿", next: "15" }
+      ] },
+      "09": { title: "周日天气很好你会________", options: [
+        { key: "A", text: "在家睡觉", next: "15" },
+        { key: "B", text: "出门郊游", next: "10" },
+        { key: "C", text: "在家发呆", next: "17" }
+      ] },
+      "10": { title: "看到右图你会想到________", options: [
+        { key: "A", text: "=□=抠抠抠抠抠抠", next: "16" },
+        { key: "B", text: "是黄少天的中指吗？", next: "23" },
+        { key: "C", text: "那条多出来的是什么，印刷错误吗？", next: "18" }
+      ] },
+      "11": { title: "最常做的健身项目是_______", options: [
+        { key: "A", text: "散步", next: "17" },
+        { key: "B", text: "慢跑", next: "14" },
+        { key: "C", text: "蹲起", next: "20" }
+      ] },
+      "12": { title: "现在使用的手机造型是_______", options: [
+        { key: "A", text: "直板手机", next: "14" },
+        { key: "B", text: "滑盖手机", next: "16" },
+        { key: "C", text: "翻盖手机", next: "18" }
+      ] },
+      "13": { title: "第一次和人见面，但是TA不太爱说话，这时你会______", options: [
+        { key: "A", text: "玩起手机，TA不爱说我也不想说，搞不好QQ上比较好聊", next: "OPT_N" },
+        { key: "B", text: "积极地和TA聊天，大家熟了说的就多了", next: "16" },
+        { key: "C", text: "气氛好尴尬，再叫个基友来吧", next: "OPT_I" }
+      ] },
+      "14": { title: "如果一定要看电视的话，你会选择______", options: [
+        { key: "A", text: "偶尔看看韩剧也......", next: "21" },
+        { key: "B", text: "国产电视剧挺有趣", next: "22" },
+        { key: "C", text: "看看新闻联播", next: "24" }
+      ] },
+      "15": { title: "睡觉的时候一定要用固定的姿势才能睡着?", options: [
+        { key: "A", text: "是", next: "21" },
+        { key: "B", text: "不是", next: "17" },
+        { key: "C", text: "还没注意姿势就已经睡着了", next: "20" }
+      ] },
+      "16": { title: "如果有人在地铁/公交上喋喋不休地说话......", options: [
+        { key: "A", text: "可以自动屏蔽其他声音", next: "18" },
+        { key: "B", text: "听听他在说什么，搞不好可以听到有趣的八卦", next: "14" },
+        { key: "C", text: "带上耳机", next: "19" },
+        { key: "D", text: "和对方说“你太吵了”", next: "17" }
+      ] },
+      "17": { title: "收到评论会马上回复?", options: [
+        { key: "A", text: "嗯，当然", next: "25" },
+        { key: "B", text: "如此高冷的我怎么可以马上回复?", next: "19" },
+        { key: "C", text: "好累，等有空……", next: "20" }
+      ] },
+      "18": { title: "如果画一个王杰希队长，你会把他的大眼画得多大呢?", options: [
+        { key: "A", text: "怎么也要是美少年战士的程度", next: "26" },
+        { key: "B", text: "稍微大一点就可以了，这样不会影响他的美貌度", next: "21" },
+        { key: "C", text: "队长你自己出这种题......没问题吗?（心在滴血无法思考）", next: "13" }
+      ] },
+      "19": { title: "你的面前有一只猫，你觉得它会_______", options: [
+        { key: "A", text: "一口咬住你的手，不亲近就算了，还要留下几道爱的痕迹", next: "24" },
+        { key: "B", text: "蹭蹭你的腿，很随意地让你摸", next: "OPT_J" },
+        { key: "C", text: "装作没有看见你迅速地逃走", next: "OPT_A" }
+      ] },
+      "20": { title: "午饭只有两个馒头，家里可以配馒头吃的东西也没几样......", options: [
+        { key: "A", text: "蘸着老干妈吃，倍儿香！", next: "24" },
+        { key: "B", text: "还有一包榨菜丝，虽然是前天打开的", next: "25" },
+        { key: "C", text: "这怎么吃啊！出门下馆子去......", next: "18" }
+      ] },
+      "21": { title: "地上有一只蟑螂。活的。", options: [
+        { key: "A", text: "“啊————”", next: "OPT_H" },
+        { key: "B", text: "没有其他人在旁边的话，踩死。有人在身旁的话，让人踩死", next: "22" },
+        { key: "C", text: "踩死", next: "29" },
+        { key: "D", text: "高兴地找出了各种对付蟑螂的药", next: "19" }
+      ] },
+      "22": { title: "打副本的时候因为自己而团灭了。", options: [
+        { key: "A", text: "都是我的错，我的错，我的......", next: "25" },
+        { key: "B", text: "先向大家道歉，然后系统地检讨为什么会团灭，下次要注意的地方也要规划出来", next: "23" },
+        { key: "C", text: "咱们再来过啊！这次我一定不手滑", next: "OPT_E" }
+      ] },
+      "23": { title: "男友的整洁度非常重要?", options: [
+        { key: "A", text: "是", next: "OPT_K" },
+        { key: "B", text: "是", next: "OPT_K" },
+        { key: "C", text: "A和B有什么不同？", next: "OPT_M" },
+        { key: "D", text: "差不多就行", next: "19" }
+      ] },
+      "24": { title: "“啊！我的包被那个人偷走了！”旁边的人忽然叫道。", options: [
+        { key: "A", text: "追", next: "27" },
+        { key: "B", text: "有点可怕，躲开一点", next: "26" },
+        { key: "C", text: "围观一下", next: "13" },
+        { key: "D", text: "安慰一下丢包的人", next: "19" }
+      ] },
+      "25": { title: "窗外的花开得非常灿烂。你会______", options: [
+        { key: "A", text: "拍照", next: "OPT_L" },
+        { key: "B", text: "关窗", next: "27" },
+        { key: "C", text: "摘几枝", next: "26" }
+      ] },
+      "26": { title: "刚买的笔记本被自己弄卷边了。", options: [
+        { key: "A", text: "再买一本", next: "OPT_D" },
+        { key: "B", text: "接着用", next: "19" },
+        { key: "C", text: "竟然卷了......这是我最喜欢的本子......找个地方放起来", next: "29" }
+      ] },
+      "27": { title: "小偷跑得很快，你可能抓不到他......", options: [
+        { key: "A", text: "继续追", next: "OPT_G" },
+        { key: "B", text: "交给其他人吧......", next: "30" },
+        { key: "C", text: "这边我熟，先想一下哪条路比较近", next: "OPT_C" }
+      ] },
+      "28": { title: "不如考虑一下成为女孩子，这样就有很多测试题可以做了。", options: [
+        { key: "A", text: "本来就是！", next: "02" },
+        { key: "B", text: "本来就是！", next: "02" },
+        { key: "C", text: "本来就是！", next: "02" },
+        { key: "D", text: "别闹了，男孩子又怎么样！", next: "20" }
+      ] },
+      "29": { title: "过年的交换明信片到现在还没写完。", options: [
+        { key: "A", text: "年前就已经全部发完了", next: "OPT_H" },
+        { key: "B", text: "懒得搞这些事", next: "30" },
+        { key: "C", text: "还没写完 _（:3）<）_", next: "17" },
+        { key: "D", text: "虽然是年后才弄完的，但是现在已经发完了", next: "OPT_J" }
+      ] },
+      "30": { title: "有时候会缺乏安全感？", options: [
+        { key: "A", text: "经常", next: "OPT_I" },
+        { key: "B", text: "偶尔", next: "26" },
+        { key: "C", text: "啥?", next: "OPT_F" }
+      ] }
+    };
+
+    function setQuestionTitle(index, text) {
+      questionText.textContent = `第${Number(index)}题：${text}`;
+    }
+
+    function shapeSvg(shape) {
+      if (shape === "△") {
+        return '<svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 L20 19 H4 Z" fill="none" stroke="currentColor" stroke-width="2" /></svg>';
+      }
+      if (shape === "○") {
+        return '<svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2" /></svg>';
+      }
+      return '<svg class="shape-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" /></svg>';
+    }
+
+    function renderQuestion(questionId) {
+      const question = QUESTIONS[questionId];
+      if (!question) {
+        renderResult(`题目${questionId}`);
+        return;
+      }
+
+      if (questionId === "00") {
+        openingBlock.classList.remove("hidden");
+      } else {
+        openingBlock.classList.add("hidden");
+      }
+      currentQuestion = questionId;
+      setQuestionTitle(questionId, question.title);
+      if (QUESTION_IMAGES[questionId]) {
+        questionMedia.classList.remove("hidden");
+        if (questionId === "10") {
+          optionsRow.classList.add("side");
+          questionMedia.classList.add("side");
+        } else {
+          optionsRow.classList.remove("side");
+          questionMedia.classList.remove("side");
+        }
+        questionImage.src = QUESTION_IMAGES[questionId];
+      } else {
+        questionMedia.classList.add("hidden");
+        questionMedia.classList.remove("side");
+        optionsRow.classList.remove("side");
+        questionImage.removeAttribute("src");
+      }
+
+      optionsWrap.innerHTML = question.options.map((option) => {
+        if (questionId === "02" && (option.text === "△" || option.text === "○" || option.text === "□")) {
+          return `<button class="option-item" data-choice="${option.key}"><span class="option-id">${option.key}</span> ${shapeSvg(option.text)}</button>`;
+        }
+        return `<button class="option-item" data-choice="${option.key}"><span class="option-id">${option.key}</span> ${option.text}</button>`;
+      }).join("");
+    }
+
+    function renderResult(resultCode) {
+      const result = RESULTS[resultCode];
+      openingBlock.classList.add("hidden");
+      questionText.textContent = result ? `测试结果：${result.name}` : `结果分支：${resultCode}`;
+      questionMedia.classList.add("hidden");
+      questionMedia.classList.remove("side");
+      optionsRow.classList.remove("side");
+      questionImage.removeAttribute("src");
+      optionsWrap.innerHTML = `
+        ${result ? `
+          <div class="result-card">
+            <p class="result-name">${result.name}</p>
+            <p class="result-body">${result.body}</p>
+            ${result.note ? `<p class="result-note">${result.note}</p>` : ""}
+          </div>
+        ` : ""}
+        <button class="option-item" data-action="show-all-results">查看全部结果</button>
+        <div class="all-results hidden" id="allResultsWrap"></div>
+      `;
+    }
+
+    function showCover() {
+      gamePage.classList.add("hidden");
+      coverPage.classList.remove("hidden");
+    }
+
+    function showQuiz() {
+      coverPage.classList.add("hidden");
+      gamePage.classList.remove("hidden");
+    }
+
+    function goToQuestion(questionId, useReplace = false) {
+      showQuiz();
+      renderQuestion(questionId);
+      const state = { view: "quiz-question", questionId };
+      if (useReplace) {
+        history.replaceState(state, "", "index.html");
+      } else {
+        history.pushState(state, "", "index.html");
+      }
+    }
+
+    function goToResult(resultCode) {
+      showQuiz();
+      renderResult(resultCode);
+      history.pushState({ view: "quiz-result", resultCode }, "", "index.html");
+    }
+
+    startBtn.addEventListener("click", () => {
+      goToQuestion("00");
+    });
+
+    optionsWrap.addEventListener("click", (event) => {
+      const optionButton = event.target.closest(".option-item");
+      if (!optionButton) return;
+
+      const action = optionButton.dataset.action;
+      if (action === "show-all-results") {
+        const allResultsWrap = document.getElementById("allResultsWrap");
+        if (!allResultsWrap) return;
+        optionButton.remove();
+        allResultsWrap.classList.remove("hidden");
+        allResultsWrap.innerHTML = `
+          <p class="all-results-divider">————以下是全部角色————</p>
+          ${Object.entries(RESULTS).map(([key, item]) => `
+          <div class="result-card">
+            <p class="result-name">${item.name}</p>
+            <p class="result-body">${item.body}</p>
+            ${item.note ? `<p class="result-note">${item.note}</p>` : ""}
+          </div>
+          `).join("")}
+        `;
+        return;
+      }
+
+      const selectedChoice = optionButton.dataset.choice;
+      const current = QUESTIONS[currentQuestion];
+      if (!current) return;
+      const selectedOption = current.options.find((item) => item.key === selectedChoice);
+      if (!selectedOption) return;
+
+      if (selectedOption.next === "PAGE_GUESS_WARNING") {
+        window.location.href = "guess-warning.html";
+        return;
+      }
+
+      if (selectedOption.next.startsWith("OPT_")) {
+        goToResult(selectedOption.next.replace("OPT_", ""));
+        return;
+      }
+
+      goToQuestion(selectedOption.next);
+    });
+
+    if (window.location.hash === "#gender") {
+      goToQuestion("00", true);
+    } else {
+      history.replaceState({ view: "cover" }, "", "index.html");
+    }
+
+    window.addEventListener("popstate", (event) => {
+      const state = event.state;
+      if (!state || state.view === "cover") {
+        showCover();
+        return;
+      }
+
+      if (state.view === "quiz-question" && state.questionId) {
+        showQuiz();
+        renderQuestion(state.questionId);
+        return;
+      }
+
+      if (state.view === "quiz-result" && state.resultCode) {
+        showQuiz();
+        renderResult(state.resultCode);
+        return;
+      }
+
+      showCover();
+    });
+  </script>
+</body>
+</html>
