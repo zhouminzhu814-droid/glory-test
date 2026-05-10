@@ -571,7 +571,7 @@
           <img
             class="opening-portrait"
             id="openingPortrait"
-            src=""
+            src="./images/wang.png"
             alt="王杰希"
             decoding="async"
           />
@@ -672,12 +672,22 @@
       return u.href;
     }
 
-    function quizAsset(relPath) {
-      const rel = String(relPath).replace(/^\.\//, "");
+    function quizBaseDir() {
       const path = window.location.pathname || "/";
-      const slash = path.lastIndexOf("/");
-      const dir = slash >= 0 ? path.slice(0, slash + 1) : "/";
-      return new URL(rel, window.location.origin + dir).href;
+      if (path.endsWith("/")) {
+        return path;
+      }
+      const lastSeg = path.slice(path.lastIndexOf("/") + 1);
+      if (lastSeg.includes(".")) {
+        const slash = path.lastIndexOf("/");
+        return slash >= 0 ? path.slice(0, slash + 1) : "/";
+      }
+      return `${path}/`;
+    }
+
+    function quizAsset(relPath) {
+      const rel = String(relPath).replace(/^\.\//, "").replace(/^\/+/, "");
+      return new URL(rel, window.location.origin + quizBaseDir()).href;
     }
 
     const QUESTION_IMAGES = {
