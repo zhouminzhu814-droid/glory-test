@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>测试结果：冯宪君</title>
+  <style>
+    :root {
+      --bg-1: #0f1020;
+      --bg-2: #1a1c38;
+      --accent: #ffb703;
+      --accent-hover: #ffc94a;
+      --text-main: #f7f8ff;
+      --text-sub: #c7cae7;
+      --card: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(circle at top right, #28326d 0%, transparent 40%),
+        radial-gradient(circle at bottom left, #5f247a 0%, transparent 45%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .game-content {
+      width: min(960px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .question {
+      margin-top: 4px;
+      color: var(--text-main);
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .options-row {
+      display: block;
+    }
+
+    .options {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .option-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .option-item:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .result-card {
+      border: 1px solid rgba(255, 183, 3, 0.45);
+      border-radius: 14px;
+      padding: 16px;
+      background: rgba(255, 183, 3, 0.08);
+      margin-bottom: 0;
+    }
+
+    .result-name {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #ffd67a;
+    }
+
+    .result-body {
+      font-size: 17px;
+      line-height: 1.8;
+      color: rgba(247, 248, 255, 0.94);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="game-content">
+    <section>
+      <p class="question">测试结果：冯宪君</p>
+      <div class="options-row">
+        <div class="options">
+          <div class="result-card">
+            <p class="result-name">冯宪君</p>
+            <p class="result-body">冯主席：咳咳，我已婚很多年了，请遵守游戏规则。</p>
+          </div>
+          <a class="option-item" id="returnQuiz" href="index.html#gender">重新测试</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var h = sessionStorage.getItem("quizReturnHome");
+      if (h) {
+        sessionStorage.removeItem("quizReturnHome");
+        var a = document.getElementById("returnQuiz");
+        if (a) a.setAttribute("href", h);
+      }
+    })();
+  </script>
+</body>
+</html>
