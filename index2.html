@@ -399,17 +399,17 @@
       }
 
       .opening-layout {
-        flex-wrap: nowrap;
-        align-items: flex-start;
-        gap: 12px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
       }
 
       .opening-media {
-        align-self: flex-start;
+        align-self: center;
       }
 
       .opening-portrait {
-        width: min(100px, 26vw);
+        width: min(168px, 52vw);
       }
 
       .result-row-portrait {
@@ -425,8 +425,119 @@
       }
     }
 
+    /* 第0题选 C / E：仅在本页展示，风格与粉版主界面一致（不跳转 guess-warning / feng-chairman） */
+    .aux-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 12px 28px;
+      background-color: rgba(26, 10, 34, 0.97);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23ff37cb' fill-opacity='0.055'%3E%3Cpath transform='translate(8,10) scale(1.15)' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3Cpath transform='translate(48,44) scale(0.75) rotate(-12 12 12)' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 12% 20%, rgba(255, 55, 203, 0.18) 0%, transparent 38%),
+        radial-gradient(circle at 88% 72%, rgba(255, 150, 220, 0.12) 0%, transparent 42%),
+        linear-gradient(180deg, #2a1030 0%, #140818 52%, #1a0a22 100%);
+      background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+      background-size: 80px 80px, auto, auto, auto;
+      backdrop-filter: blur(12px);
+    }
+
+    .aux-overlay.is-open {
+      display: flex;
+    }
+
+    .aux-overlay-shell {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .aux-overlay-skyline {
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.35em;
+      color: #ffb3ea;
+      text-shadow: 0 0 6px rgba(255, 55, 203, 0.9);
+      margin-bottom: 14px;
+      user-select: none;
+      opacity: 0.92;
+    }
+
+    .aux-overlay-frame {
+      border: 1px solid rgba(255, 200, 235, 0.28);
+      border-radius: 22px;
+      padding: 0;
+      background: rgba(18, 8, 24, 0.72);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 56px rgba(0, 0, 0, 0.42);
+    }
+
+    .aux-overlay-inner {
+      padding: 28px 22px 32px;
+    }
+
+    .aux-overlay-inner--center {
+      text-align: center;
+    }
+
+    .aux-overlay-inner--feng {
+      text-align: left;
+    }
+
+    .aux-overlay-title {
+      font-size: clamp(26px, 5vw, 44px);
+      line-height: 1.3;
+      margin: 0 0 8px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      background: linear-gradient(90deg, #ff9fe8, #ff37cb, #c4b5fd, #ff37cb, #ff9fe8);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: retro-rainbow 5s linear infinite;
+    }
+
+    .aux-overlay-question {
+      margin: 0 0 14px;
+      color: #fff5fd;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 800;
+      line-height: 1.45;
+      padding: 6px 2px 4px;
+    }
+
+    .aux-feng-card {
+      margin-bottom: 0;
+    }
+
+    .aux-actions {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .aux-actions .btn {
+      min-width: min(280px, 100%);
+    }
+
+    @media (max-width: 520px) {
+      .aux-actions .btn {
+        width: 100%;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .title-highlight {
+        animation: none;
+      }
+
+      .aux-overlay-title {
         animation: none;
       }
     }
@@ -440,7 +551,7 @@
   <main class="hero" id="coverPage">
     <h1>
       <span class="title-main">全职高手小游戏之</span>
-      <span class="title-highlight">你与谁最匹配 (*/ω＼*)</span>
+      <span class="title-highlight">你与谁最匹配<br>(*/ω＼*)</span>
     </h1>
     <div class="actions">
       <button class="btn btn-primary" id="startBtn">开始测试</button>
@@ -459,7 +570,8 @@
         <div class="opening-media">
           <img
             class="opening-portrait"
-            src="./images/wang.png"
+            id="openingPortrait"
+            src=""
             alt="王杰希"
             decoding="async"
           />
@@ -487,6 +599,37 @@
     </div>
   </div>
 
+  <div class="aux-overlay" id="auxGuessWarning" role="dialog" aria-modal="true" aria-labelledby="auxGuessTitle">
+    <div class="aux-overlay-shell">
+      <div class="aux-overlay-skyline" aria-hidden="true">★ ♥ ☆ ♡ ★ ♥ ☆ ♡ ★ ♥ ☆ ♡ ★</div>
+      <div class="aux-overlay-frame">
+        <div class="aux-overlay-inner aux-overlay-inner--center">
+          <h1 class="aux-overlay-title" id="auxGuessTitle">给我好好玩游戏啊喂！</h1>
+          <div class="aux-actions">
+            <button type="button" class="btn btn-primary" id="auxGuessRestart">重新测试</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="aux-overlay" id="auxFengChairman" role="dialog" aria-modal="true" aria-labelledby="auxFengTitle">
+    <div class="aux-overlay-shell">
+      <div class="aux-overlay-skyline" aria-hidden="true">★ ♥ ☆ ♡ ★ ♥ ☆ ♡ ★ ♥ ☆ ♡ ★</div>
+      <div class="aux-overlay-frame">
+        <div class="aux-overlay-inner aux-overlay-inner--feng">
+          <p class="aux-overlay-question" id="auxFengTitle">测试结果：冯宪君</p>
+          <div class="result-card aux-feng-card">
+            <p class="result-name">冯宪君</p>
+            <p class="result-body">冯主席：咳咳，我已婚很多年了，请遵守游戏规则。</p>
+          </div>
+          <div class="aux-actions">
+            <button type="button" class="btn btn-primary" id="auxFengRestart">重新测试</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const startBtn = document.getElementById("startBtn");
     const coverPage = document.getElementById("coverPage");
@@ -497,7 +640,31 @@
     const questionMedia = document.getElementById("questionMedia");
     const questionImage = document.getElementById("questionImage");
     const optionsWrap = document.getElementById("optionsWrap");
+    const auxGuessWarning = document.getElementById("auxGuessWarning");
+    const auxFengChairman = document.getElementById("auxFengChairman");
     let currentQuestion = "00";
+
+    function hideAuxOverlays() {
+      auxGuessWarning?.classList.remove("is-open");
+      auxFengChairman?.classList.remove("is-open");
+    }
+
+    function openAuxGuessWarning() {
+      hideAuxOverlays();
+      auxGuessWarning?.classList.add("is-open");
+      history.pushState({ view: "aux-guess-warning" }, "", quizHistoryUrl());
+    }
+
+    function openAuxFengChairman() {
+      hideAuxOverlays();
+      auxFengChairman?.classList.add("is-open");
+      history.pushState({ view: "aux-feng-chairman" }, "", quizHistoryUrl());
+    }
+
+    function restartFromAuxOverlay() {
+      hideAuxOverlays();
+      goToQuestion("00", true);
+    }
 
     function quizHistoryUrl() {
       const u = new URL(window.location.href);
@@ -505,20 +672,23 @@
       return u.href;
     }
 
-    function rememberQuizReturnForAuxPages() {
-      try {
-        const base = window.location.pathname.split("/").pop() || "index2.html";
-        const u = new URL(base, window.location.href);
-        u.hash = "gender";
-        sessionStorage.setItem("quizReturnHome", u.href);
-      } catch {
-        sessionStorage.removeItem("quizReturnHome");
-      }
+    function quizAsset(relPath) {
+      const rel = String(relPath).replace(/^\.\//, "");
+      const path = window.location.pathname || "/";
+      const slash = path.lastIndexOf("/");
+      const dir = slash >= 0 ? path.slice(0, slash + 1) : "/";
+      return new URL(rel, window.location.origin + dir).href;
     }
 
     const QUESTION_IMAGES = {
-      "10": "./images/q10-finger.png"
+      "10": "images/q10-finger.png"
     };
+
+    (function initOpeningPortrait() {
+      const el = document.getElementById("openingPortrait");
+      if (el) el.src = quizAsset("images/wang.png");
+    })();
+
     const RESULTS = {
       A: {
         name: "叶修",
@@ -800,7 +970,7 @@
           optionsRow.classList.remove("side");
           questionMedia.classList.remove("side");
         }
-        questionImage.src = QUESTION_IMAGES[questionId];
+        questionImage.src = quizAsset(QUESTION_IMAGES[questionId]);
       } else {
         questionMedia.classList.add("hidden");
         questionMedia.classList.remove("side");
@@ -820,13 +990,13 @@
       const result = RESULTS[resultCode];
       const sidePortrait =
         resultCode === "A"
-          ? { src: "./images/yexiu.png", alt: "叶修" }
+          ? { src: quizAsset("images/yexiu.png"), alt: "叶修" }
           : resultCode === "D"
-            ? { src: "./images/huangshaotian.png", alt: "黄少天" }
+            ? { src: quizAsset("images/huangshaotian.png"), alt: "黄少天" }
             : resultCode === "H"
-              ? { src: "./images/wangjiexi.png", alt: "王杰希" }
+              ? { src: quizAsset("images/wangjiexi.png"), alt: "王杰希" }
               : resultCode === "L"
-                ? { src: "./images/zhangjiale.png", alt: "张佳乐" }
+                ? { src: quizAsset("images/zhangjiale.png"), alt: "张佳乐" }
                 : null;
       openingBlock.classList.add("hidden");
       questionText.textContent = result ? `测试结果：${result.name}` : `结果分支：${resultCode}`;
@@ -861,6 +1031,7 @@
     }
 
     function showCover() {
+      hideAuxOverlays();
       gamePage.classList.add("hidden");
       coverPage.classList.remove("hidden");
     }
@@ -926,14 +1097,12 @@
       if (!selectedOption) return;
 
       if (selectedOption.next === "PAGE_GUESS_WARNING") {
-        rememberQuizReturnForAuxPages();
-        window.location.href = "guess-warning.html";
+        openAuxGuessWarning();
         return;
       }
 
       if (selectedOption.next === "PAGE_FENG_CHAIRMAN") {
-        rememberQuizReturnForAuxPages();
-        window.location.href = "feng-chairman.html";
+        openAuxFengChairman();
         return;
       }
 
@@ -945,6 +1114,9 @@
       goToQuestion(selectedOption.next);
     });
 
+    document.getElementById("auxGuessRestart")?.addEventListener("click", restartFromAuxOverlay);
+    document.getElementById("auxFengRestart")?.addEventListener("click", restartFromAuxOverlay);
+
     if (window.location.hash === "#gender") {
       goToQuestion("00", true);
     } else {
@@ -953,8 +1125,22 @@
 
     window.addEventListener("popstate", (event) => {
       const state = event.state;
+      hideAuxOverlays();
+
       if (!state || state.view === "cover") {
         showCover();
+        return;
+      }
+
+      if (state.view === "aux-guess-warning") {
+        showQuiz();
+        auxGuessWarning?.classList.add("is-open");
+        return;
+      }
+
+      if (state.view === "aux-feng-chairman") {
+        showQuiz();
+        auxFengChairman?.classList.add("is-open");
         return;
       }
 
