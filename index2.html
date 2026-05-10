@@ -3,6 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    (function () {
+      function quizBaseDir() {
+        var path = location.pathname || "/";
+        if (path.endsWith("/")) return path;
+        var last = path.slice(path.lastIndexOf("/") + 1);
+        if (last.indexOf(".") >= 0) {
+          var s = path.lastIndexOf("/");
+          return s >= 0 ? path.slice(0, s + 1) : "/";
+        }
+        return path + "/";
+      }
+      function quizAsset(relPath) {
+        var rel = String(relPath).replace(/^\.\//, "").replace(/^\/+/, "");
+        return new URL(rel, location.origin + quizBaseDir()).href;
+      }
+      window.__quizBaseDir = quizBaseDir;
+      window.__quizAsset = quizAsset;
+    })();
+  </script>
   <title>全职高手小游戏之——你与谁最匹配？！？！（粉）</title>
   <style>
     :root {
@@ -571,10 +591,18 @@
           <img
             class="opening-portrait"
             id="openingPortrait"
-            src="./images/wang.png"
+            src=""
             alt="王杰希"
             decoding="async"
+            loading="eager"
+            fetchpriority="high"
           />
+          <script>
+            void (function () {
+              var el = document.getElementById("openingPortrait");
+              if (el && window.__quizAsset) el.src = window.__quizAsset("images/wang.png");
+            })();
+          </script>
         </div>
       </div>
     </section>
@@ -672,32 +700,11 @@
       return u.href;
     }
 
-    function quizBaseDir() {
-      const path = window.location.pathname || "/";
-      if (path.endsWith("/")) {
-        return path;
-      }
-      const lastSeg = path.slice(path.lastIndexOf("/") + 1);
-      if (lastSeg.includes(".")) {
-        const slash = path.lastIndexOf("/");
-        return slash >= 0 ? path.slice(0, slash + 1) : "/";
-      }
-      return `${path}/`;
-    }
-
-    function quizAsset(relPath) {
-      const rel = String(relPath).replace(/^\.\//, "").replace(/^\/+/, "");
-      return new URL(rel, window.location.origin + quizBaseDir()).href;
-    }
+    const quizAsset = window.__quizAsset;
 
     const QUESTION_IMAGES = {
       "10": "images/q10-finger.png"
     };
-
-    (function initOpeningPortrait() {
-      const el = document.getElementById("openingPortrait");
-      if (el) el.src = quizAsset("images/wang.png");
-    })();
 
     const RESULTS = {
       A: {
