@@ -459,7 +459,7 @@
         <div class="opening-media">
           <img
             class="opening-portrait"
-            src="./assets/wang.png"
+            src="./images/wang.png"
             alt="王杰希"
             decoding="async"
           />
@@ -820,13 +820,13 @@
       const result = RESULTS[resultCode];
       const sidePortrait =
         resultCode === "A"
-          ? { src: "./assets/yexiu.png", alt: "叶修" }
+          ? { src: "./images/yexiu.png", alt: "叶修" }
           : resultCode === "D"
-            ? { src: "./assets/huangshaotian.png", alt: "黄少天" }
+            ? { src: "./images/huangshaotian.png", alt: "黄少天" }
             : resultCode === "H"
-              ? { src: "./assets/wangjiexi.png", alt: "王杰希" }
+              ? { src: "./images/wangjiexi.png", alt: "王杰希" }
               : resultCode === "L"
-                ? { src: "./assets/zhangjiale.png", alt: "张佳乐" }
+                ? { src: "./images/zhangjiale.png", alt: "张佳乐" }
                 : null;
       openingBlock.classList.add("hidden");
       questionText.textContent = result ? `测试结果：${result.name}` : `结果分支：${resultCode}`;
