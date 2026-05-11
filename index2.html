@@ -597,12 +597,6 @@
             loading="eager"
             fetchpriority="high"
           />
-          <script>
-            void (function () {
-              var el = document.getElementById("openingPortrait");
-              if (el && window.__quizAsset) el.src = window.__quizAsset("images/wang.png");
-            })();
-          </script>
         </div>
       </div>
     </section>
@@ -973,6 +967,8 @@
 
       if (questionId === "00") {
         openingBlock.classList.remove("hidden");
+        const openingPortraitEl = document.getElementById("openingPortrait");
+        if (openingPortraitEl) openingPortraitEl.src = quizAsset("images/wang.png");
       } else {
         openingBlock.classList.add("hidden");
       }
